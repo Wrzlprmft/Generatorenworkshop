@@ -1,0 +1,377 @@
+\documentclass[xcolor=dvipsnames, aspectratio=169, 14pt]{beamer}
+\usefonttheme{professionalfonts}
+
+\usepackage{xltxtra} % lädt auch fixltx2e, etex, fontspec, xunicode …
+
+\usepackage{array, color, enumerate, fixmath, gensymb, graphicx, graphics, icomma, mathcomp, mathtools, minted, multirow, nicefrac, placeins, relsize, rotating, tabularx, tikz, units, xspace, xtab, lipsum}
+
+\usepackage[math-style=upright]{unicode-math}
+
+% Schriften
+\setmathfont{Neo Euler}
+\setromanfont[Mapping=tex-text]{Aller}
+\setsansfont[Mapping=tex-text]{Aller}
+\setmonofont[Scale=0.96]{Iosevka}
+\newfontfamily\titlefamily{Aller Display}
+
+% Statt babel:
+\usepackage{polyglossia}
+\setdefaultlanguage[variant = uk]{english}
+
+% sonstige Einstellungen
+\usetheme[height=14mm]{Rochester}
+\useinnertheme{circles}
+\setbeamertemplate{navigation symbols}{}
+
+\setbeamerfont{block title}{family=\titlefamily}
+\setbeamertemplate{blocks}[rounded]
+
+\setbeamerfont{frametitle}{family=\titlefamily}
+
+%Presentation
+\usecolortheme[accent=red]{solarized}
+\setbeamercolor*{frametitle}{fg = solarized@red, bg = solarized@rebase02}
+\setbeamercolor{normal text}{fg = solarized@rebase3, bg = solarized@rebase03}
+
+\definecolor{pagenumbers}{HTML}{B4EBE7}
+
+\addtobeamertemplate{headline}{}
+{%
+	\begin{tikzpicture}[remember picture,overlay]
+		\node[anchor=south east] at (current page.south east) {\textcolor{pagenumbers}{\insertframenumber}};
+	\end{tikzpicture}%
+}
+
+\renewcommand{\tabularxcolumn}[1]{>{\centering\arraybackslash}m{#1}}
+
+\usemintedstyle{solarizedlight}
+\newminted{python3}{
+% 		fontsize = \scriptsize, 
+% 		linenos, stepnumber = 5,
+		frame = lines, framesep = 8pt,
+		baselinestretch = 1.2,
+		numbersep = 8pt,
+		gobble = 1,
+		bgcolor = solarized@rebase02,
+		obeytabs, tabsize = 4,
+		stripnl = false
+		}
+% \includeonlyframes{current} %[label=current]
+
+\begin{document}
+
+\begin{frame}[plain]
+\begin{center}
+
+\vfill
+
+\textlarger[4]
+{\color{solarized@red}
+	\titlefamily Generatorfunktionen und\strut{}\\
+das Yield-Statement
+}
+
+\vfill
+
+Gerrit Ansmann
+
+\vfill
+\end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Syntax (Generator Comprehensions)}
+	\begin{columns}%
+	\column{0.5\linewidth}
+		Liste:
+	\begin{python3code}
+	X = [n**2 for n in range(4)]
+	
+	for element in X:
+		print(element)
+	# 0
+	# 1
+	# 4
+	# 9
+	\end{python3code}
+	\column<2->{0.5\linewidth}
+		Generator:
+	\begin{python3code}
+	X = (n**2 for n in range(4))
+	
+	for element in X:
+		print(element)
+	# 0
+	# 1
+	# 4
+	# 9
+	\end{python3code}
+	\end{columns}
+\end{frame}
+
+\begin{frame}<1-2>[label=comparison]{Listen vs. Generatoren – Eigenschaften}
+	\begin{columns}%
+	\column{0.5\linewidth}
+		Listen:
+		\vspace{0.5\baselineskip}
+		\begin{itemize}[topsep=0.5\baselineskip]
+			\setlength{\itemsep}{0.5\baselineskip}
+			\item<alert@2> alle Elemente werden gespeichert
+			\item<alert@3> Elemente direkt ansprechbar
+			\item<alert@4> können beliebig oft\\ genutzt werden
+			\item<alert@5> haben eine Länge (\texttt{len})
+		\end{itemize}
+	\column{0.5\linewidth}
+		Generatoren:
+		\begin{itemize}
+		\vspace{0.5\baselineskip}
+			\setlength{\itemsep}{0.5\baselineskip}
+			\item<alert@2> Elemente werden bei Bedarf generiert
+			\item<alert@3> Elemente nicht direkt ansprechbar
+			\item<alert@4> können nur einmal durchlaufen werden
+			\item<alert@5> haben keine explizite Länge
+		\end{itemize}
+	\end{columns}
+\end{frame}
+
+
+\begin{frame}[fragile]{Speichern}
+	\vspace{-\baselineskip}
+	\begin{columns}%
+	\column{0.5\linewidth}
+	\begin{python3code}
+	X = [n for n in range(10**9)]
+	
+	print(1 in X)
+	# dauert und frisst Speicher
+	\end{python3code}
+	
+	\column{0.5\linewidth}
+	\begin{python3code}
+	X = (n for n in range(10**9))
+	
+	print(1 in X)
+	# flutscht
+	\end{python3code}
+	\end{columns}
+	
+	\vspace{-\baselineskip}
+	
+	\begin{columns}<2->%
+	\column{0.5\linewidth}
+	\begin{python3code}
+	X = [n for n in range(10**9)]
+	
+	print(10**10 in X)
+	# dauert und frisst Speicher
+	\end{python3code}
+	
+	\column{0.5\linewidth}
+	\begin{python3code}
+	X = (n for n in range(10**9))
+	
+	print(10**10 in X)
+	# dauert
+	\end{python3code}
+	\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Generierung nach Bedarf}
+	\begin{columns}%
+	\column[t]{0.5\linewidth}
+	\begin{python3code}
+	X = [1/n for n in range(9)]
+	# ZeroDivisionError
+	\end{python3code}
+	
+	\column[t]{0.5\linewidth}
+	\begin{python3code}
+	X = (1/n for n in range(9))
+	
+	next(X)
+	# ZeroDivisionError
+	\end{python3code}
+	\end{columns}
+\end{frame}
+
+\againframe<3>{comparison}
+
+\begin{frame}[fragile]{Elemente Ansprechen}
+	\begin{columns}%
+	\column{0.5\linewidth}
+	\begin{python3code}
+	X = [n**2 for n in range(9)]
+	
+	print(X[4])
+	# 16
+	\end{python3code}
+	
+	\column{0.5\linewidth}
+	\begin{python3code}
+	X = (n**2 for n in range(9))
+	
+	print(X[4])
+	# TypeError
+	\end{python3code}
+	\end{columns}
+\end{frame}
+
+\againframe<4>{comparison}
+
+\begin{frame}[fragile]{Wiederbenutzbarkeit}
+	\begin{columns}%
+	\column{0.5\linewidth}
+	\begin{python3code}
+	X = [n**2 for n in range(9)]
+	
+	print(sum(X))
+	# 204
+	
+	print(sum(X))
+	# 204
+	\end{python3code}
+	
+	\column{0.5\linewidth}
+	\begin{python3code}
+	X = (n**2 for n in range(9))
+	
+	print(sum(X))
+	# 204
+	
+	print(sum(X))
+	# 0
+	\end{python3code}
+	\end{columns}
+\end{frame}
+
+\againframe<5>{comparison}
+\begin{frame}[fragile]{Länge}
+	\begin{columns}%
+	\column[t]{0.5\linewidth}
+	\vspace{-\baselineskip}
+	\begin{python3code}
+	X = [n**2 for n in range(9)]
+	
+	print(len(X))
+	# 9
+	\end{python3code}
+	
+	\column[t]{0.5\linewidth}
+	\vspace{-\baselineskip}
+	\begin{python3code}
+	X = (n**2 for n in range(9))
+
+	länge = 0
+	for entry in X:
+		länge += 1
+		foo(X)
+
+	print(länge)
+	# 9
+	\end{python3code}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Die Qual der Wahl}
+	Generatoren bieten sich an, wenn:
+	\vfill
+	\begin{itemize}
+		\setlength{\itemsep}{\fill}
+		\item alle Elemente zusammen viel Speicher benötigen,
+		\item nicht alle Elemente benötigt werden,
+		\item nicht sicher ist, ob die Iterable überhaupt benötigt wird,
+		\item die Iterable nur einmal durchlaufen wird,
+		\item für viele Operationen mit Iterablen
+		\item nichts gegen sie spricht (weil pythonischer)
+	\end{itemize}
+	\vfill
+	In Python~3 geben viele Standardfunktionen Generatoren aus.
+\end{frame}
+
+\begin{frame}[fragile]{Generatoren manuell Durchlaufen}
+	\begin{columns}%
+	\column{0.5\linewidth}
+	\vspace{-\baselineskip}
+	\begin{python3code}
+	X = irgendeine_liste
+	
+	index = 0
+	while foo():
+		if bar():
+			if index<len(X):
+				print(X[index])
+				index += 1
+			else:
+				break
+	\end{python3code}
+	
+	\column{0.5\linewidth}
+	\vspace{-\baselineskip}
+	\begin{python3code}
+	X = irgendein_generator
+	
+	while foo():
+		if bar():
+			try:
+				print(next(X))
+			except StopIteration:
+				break
+	\end{python3code}
+	\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Verketten von Generatoren}
+	\begin{columns}%
+	\column{0.5\linewidth}
+	\vspace{-\baselineskip}
+	\begin{python3code}
+	X,Y,Z = irgendwelche_listen
+	
+	gesamt = X+Y+Z
+	# legt neues Objekt an
+	\end{python3code}
+	
+	\column{0.5\linewidth}
+	\vspace{-\baselineskip}
+	\begin{python3code}
+	X,Y,Z = irgndwelche_genratorn
+	
+	from itertools import chain
+	gesamt = chain(X,Y,Z)
+	\end{python3code}
+	\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Generatoren selber Bauen}
+	\begin{columns}%
+	\column{0.5\linewidth}
+	\vspace{-\baselineskip}
+	\begin{python3code}
+	def my_range(länge):
+		ergebnis = []
+		i = 0
+		while i < länge:
+			ergebnis.append(i)
+			i += 1
+		return ergebnis
+	\end{python3code}
+	
+	\column{0.5\linewidth}
+	\vspace{-\baselineskip}
+	\begin{python3code}
+	def my_range(länge):
+		
+		i = 0
+		while i < länge:
+			yield i
+			i += 1
+		
+	\end{python3code}
+	\end{columns}
+\end{frame}
+
+\end{document}
+
+TODO:
+2 vs 3
+Implementation von range
+Comparison with Internet
