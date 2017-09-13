@@ -12,9 +12,9 @@
 
 % ----Schriften----
 \setmathfont{Neo Euler}
-\setromanfont[Mapping=tex-text]{Aller}
-\setsansfont[Mapping=tex-text]{Aller}
-\setmonofont[Scale=0.96]{Iosevka}
+\setromanfont[Mapping=tex-text]{Ubuntu}
+\setsansfont[Mapping=tex-text]{Ubuntu}
+\setmonofont[Scale=1.13]{Ubuntu Mono}
 \newfontfamily\titlefamily{Aller Display}
 
 % ----Sprache----
@@ -72,12 +72,45 @@
 
 \begin{document}
 \section{Übungen}
-\subsection{Quickies zur Wiederholung}
+\vfill
+\subsection{Wiederholung zum Warmwerden}
 Vergewissere Dich kurz, dass:
 \begin{itemize}
-	\item Elemente in Generatoren erst bei Bedarf erzeugt werden.
+	\item Generatoren Elemente erst bei Bedarf erzeugen.
 	\item Generatoren nur einmal genutzt werden können.
 	\item Generatoren kaum Speicher verbrauchen.
 \end{itemize}
+
+\vfill
+
+\subsection{Spaß mit \texttt{next}, \texttt{StopIteration} und \texttt{itertools.chain}}
+Schreibe eine Funktion, die einen Generator als Argument nimmt und:
+\begin{itemize}
+	\item falls der Generator nur ein einziges Element generiert:\\
+		das Element zurückgibt;
+	\item falls der Generator mehr als ein Element generiert:\\
+		eine zum Generator äquivalente Iterable zurückgibt\\ (ohne den Generator komplett zu durchlaufen).
+\end{itemize}
+
+\vfill
+
+\subsection{Generatorfunktionen und \texttt{yield}}
+Ersetze folgende Funktion, die eine Liste zurückgibt,\\ durch eine analoge Generatorfunktion.
+\begin{python3code}
+	def listenbastler():
+		liste = [42]
+		
+		for i in range(666):
+			liste.append(i**2)
+		
+		liste.extend(range(23))
+		liste.append(17)
+		
+		return liste
+\end{python3code}
+
+\subsection{Unendliche Generatoren}
+Schreibe eine Generatorfunktion, die untentwegt aufwärtszählt.\\
+Schaue Dir dabei nicht die Dokumentation von \texttt{itertools.count} an.
 
 \end{document}
