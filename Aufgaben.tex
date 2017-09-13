@@ -1,0 +1,83 @@
+\documentclass[a4paper, 14 pt]{extarticle}
+ 
+\usepackage{amsmath, amssymb}
+
+\usepackage{xltxtra}
+
+\usepackage{array, color, enumerate, fixmath, gensymb, graphicx, graphics, icomma, mathcomp, mathtools, minted, multirow, nicefrac, placeins, relsize, rotating, tabularx, titlesec, units, xspace, xtab, lipsum}
+
+\usepackage[math-style=upright]{unicode-math}
+
+
+
+% ----Schriften----
+\setmathfont{Neo Euler}
+\setromanfont[Mapping=tex-text]{Aller}
+\setsansfont[Mapping=tex-text]{Aller}
+\setmonofont[Scale=0.96]{Iosevka}
+\newfontfamily\titlefamily{Aller Display}
+
+% ----Sprache----
+\usepackage{polyglossia}
+\setdefaultlanguage[spelling=new, latesthyphen=true]{german}
+
+
+% ----Seite einstellen----
+\setlength{\columnsep}{1 cm}
+\setlength{\textwidth}{17 cm}
+\setlength{\evensidemargin}{2 cm} %Abstand Text – äußerer Rand
+
+\setlength{\hoffset}{-1 in}
+\setlength{\oddsidemargin}{21 cm}
+\addtolength{\oddsidemargin}{-\textwidth}
+\addtolength{\oddsidemargin}{-\evensidemargin}
+
+\setlength{\voffset}{-1 in}
+\setlength{\topmargin}{1.6 cm}
+
+\setlength{\headsep}{0 pt}
+\setlength{\headheight}{0 pt}
+\setlength{\textheight}{29.7 cm}
+\addtolength{\textheight}{-2 \topmargin}
+\addtolength{\textheight}{- \headheight}
+\addtolength{\textheight}{- \headsep}
+%\addtolength{\textheight}{- \footskip}
+
+\hyphenpenalty=500
+\pretolerance=150
+\tolerance=1500
+\setlength{\emergencystretch}{\textwidth}
+
+% \setlength{\parindent}{0pt} 
+
+\titleformat*{\section}{\titlefamily\larger[2]}
+\titleformat*{\subsection}{\larger[1]}
+
+\setcounter{secnumdepth}{0}
+
+\thispagestyle{empty}
+
+\usemintedstyle{bw}
+\newminted{python3}{
+% 		fontsize = \scriptsize, 
+% 		linenos, stepnumber = 5,
+		frame = lines,
+		framerule = 1pt,
+		framesep = 8pt,
+		baselinestretch = 1.2,
+		numbersep = 8pt,
+		gobble = 0,
+		obeytabs, tabsize = 4}
+
+
+\begin{document}
+\section{Übungen}
+\subsection{Quickies zur Wiederholung}
+Vergewissere Dich kurz, dass:
+\begin{itemize}
+	\item Elemente in Generatoren erst bei Bedarf erzeugt werden.
+	\item Generatoren nur einmal genutzt werden können.
+	\item Generatoren kaum Speicher verbrauchen.
+\end{itemize}
+
+\end{document}

@@ -67,8 +67,8 @@
 
 \textlarger[4]
 {\color{solarized@red}
-	\titlefamily Generatorfunktionen und\strut{}\\
-das Yield-Statement
+	\titlefamily Generatorfunktionen\strut{}\\
+	und das Yield-Statement
 }
 
 \vfill
@@ -276,15 +276,26 @@ Gerrit Ansmann
 	\vfill
 	\begin{itemize}
 		\setlength{\itemsep}{\fill}
-		\item alle Elemente zusammen viel Speicher benötigen,
-		\item nicht alle Elemente benötigt werden,
-		\item nicht sicher ist, ob die Iterable überhaupt benötigt wird,
-		\item die Iterable nur einmal durchlaufen wird,
+		\item alle Elemente zusammen viel Speicher benötigen
+		\item nicht alle Elemente benötigt werden\\ (oder nicht sicher ist, ob die Iterable überhaupt benötigt wird)
+		\item die Iterable nur einmal durchlaufen wird
 		\item für viele Operationen mit Iterablen
 		\item nichts gegen sie spricht (weil pythonischer)
 	\end{itemize}
 	\vfill
 	In Python~3 geben viele Standardfunktionen Generatoren aus.
+\end{frame}
+
+\begin{frame}{Die Qual der Wahl}
+	Generatoren bieten sich nicht an, wenn:
+	\vfill
+	\begin{itemize}
+		\setlength{\itemsep}{\fill}
+		\item die Iterable mehrfach benötigt wird\\ \textbf{und} die Elemente aufwendig zu generieren sind
+		\item die Iterable verändert werden soll
+		\item die Elemente in anderer Reihenfolge benötigt werden
+		\item als Ersatz für NumPy-Arrays,\\ wenn die Effizienz der Operationen relevant ist
+	\end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]{Generatoren manuell Durchlaufen}
@@ -341,7 +352,7 @@ Gerrit Ansmann
 	\end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{Generatoren selber Bauen}
+\begin{frame}[fragile]{Generatoren selbstgemacht}
 	\begin{columns}%
 	\column{0.5\linewidth}
 	\vspace{-\baselineskip}
@@ -369,9 +380,100 @@ Gerrit Ansmann
 	\end{columns}
 \end{frame}
 
+\begin{frame}[fragile]{Generatoren selbstgemacht}
+	\begin{columns}%
+	\column{0.5\linewidth}
+	\vspace{-\baselineskip}
+	\begin{python3code}
+	def nochngenerator():
+		print("null")
+		yield None
+		print("eins")
+		yield 2
+		print("zwei")
+		for n in range(3,10):
+			yield n
+			print(n)
+	\end{python3code}
+	
+	\column{0.5\linewidth}
+	\vspace{-\baselineskip}
+	\begin{python3code}
+	X = nochngenerator()
+	next(X)
+	# null
+	next(X)
+	# eins
+	next(X)
+	# zwei
+	next(X)
+	# 3
+	\end{python3code}
+	\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Verschachtelung von Generatoren}
+	\begin{columns}%
+	\column[t]{0.5\linewidth}
+	\vspace{-\baselineskip}
+	\begin{python3code}
+	X,Y,Z = irgndwelche_genratorn
+	
+	def alles_nacheinander():
+		for x in X:
+			yield x
+		for y in Y:
+			yield y
+		for z in Z:
+			yield z
+	\end{python3code}
+	
+	\column[t]{0.5\linewidth}
+	\vspace{-\baselineskip}
+	\begin{python3code}
+	X,Y,Z = irgndwelche_genratorn
+	
+	def alles_nacheinander():
+		yield from X
+		yield from Y
+		yield from Z
+	\end{python3code}
+	
+	(seit Python 3.3)
+	\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Exkurs: Koroutinen}
+	\begin{columns}%
+	\column{0.5\linewidth}
+	\vspace{-\baselineskip}
+	\begin{python3code}
+	def krümelmonster():
+		sättigung = 0
+		while sättigung <= 2:
+			speise = (yield)
+			if "keks" in speise:
+				sättigung += 1
+		print("Ich bin satt.")
+	\end{python3code}
+	
+	\column{0.5\linewidth}
+	\vspace{-\baselineskip}
+	\begin{python3code}
+	monster = krümelmonster()
+	monster.send("Schokokeks")
+	monster.send("Heringspizza")
+	monster.send("Sardellenkeks")
+	# Ich bin satt.
+	# StopIteration
+	\end{python3code}
+	\end{columns}
+\end{frame}
+
 \end{document}
 
 TODO:
 2 vs 3
 Implementation von range
 Comparison with Internet
+Iterator vs. Iterable
